@@ -117,3 +117,5 @@ http://127.0.0.1:8765/docs
 ## 贡献
 
 欢迎 Issue / PR。提交前请确认未包含密钥或个人数据。
+
+发布到 GitHub 见 [docs/GITHUB_PUBLISH.md](docs/GITHUB_PUBLISH.md)。
