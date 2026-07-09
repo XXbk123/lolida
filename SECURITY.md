@@ -17,4 +17,4 @@
 
 ## 报告漏洞
 
-请通过 GitHub Issue 私下说明（勿在 Issue 中粘贴真实 API Key）。
+请通过 GitHub Issue 说明（勿在 Issue 中粘贴真实 API Key）。
