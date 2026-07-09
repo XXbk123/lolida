@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Comic Sans MS", "Chalkboard SE", "Segoe UI", sans-serif;
+}
+
+body {
+  font-family: var(--font-display);
+  background: linear-gradient(135deg, #fff0f5 0%, #ffe4f0 30%, #f0e6ff 70%, #fffacd 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse-pink {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.6); }
+}
+
+.animate-pulse-pink {
+  animation: pulse-pink 2s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.level-btn-active {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
+}

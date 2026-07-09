@@ -1,0 +1,15 @@
+{
+  "name": "lolida",
+  "version": "1.0.0",
+  "private": true,
+  "description": "萝莉dao - 今天的兄弟还会是兄弟吗？嘿嘿~",
+  "scripts": {
+    "server": "cd server && uv run uvicorn app.main:app --host 0.0.0.0 --port 8765 --reload",
+    "admin": "cd admin && npm run dev",
+    "desktop": "cd desktop && npm run dev",
+    "sync-env": "cd server && uv run python sync_env.py",
+    "build:admin": "cd admin && npm run build",
+    "build:desktop": "cd desktop && npm run build",
+    "dist:desktop": "cd desktop && npm run dist"
+  }
+}

@@ -1,0 +1,42 @@
+# Python
+server/.venv/
+server/__pycache__/
+server/**/__pycache__/
+server/*.db
+server/.pytest_cache/
+server/.ruff_cache/
+
+# 用户上传与 AI 生成图片（勿提交）
+server/static/uploads/
+server/static/generated/
+server/test_*.jpg
+server/test_*.png
+server/_scheme_*.txt
+
+# Node
+node_modules/
+admin/dist/
+admin/node_modules/
+desktop/dist/
+desktop/node_modules/
+desktop/release/
+
+# 环境变量与密钥（勿提交）
+server/.env
+.env
+.env.local
+.env.*.local
+
+# 日志与临时文件
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS / 编辑器
+.cursor/
