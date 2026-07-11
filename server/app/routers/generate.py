@@ -1,6 +1,8 @@
 """图片生成 API。"""
 
+import base64
 import logging
+import os
 import uuid
 from pathlib import Path
 
@@ -70,13 +72,14 @@ async def generateImage(
             uploadPath.name,
         )
     outputPath = GENERATED_DIR / f"{fileId}_{level}.png"
+    remoteImageUrl: str | None = None
 
     usedFallback = False
 
     try:
         if aiClient.isConfigured:
             try:
-                await aiClient.transformImage(
+                outputPath, remoteImageUrl = await aiClient.transformImage(
                     sourcePath=uploadPath,
                     level=level,
                     schemeMarkdown=scheme.markdown,
@@ -125,9 +128,22 @@ async def generateImage(
     if usedFallback:
         message = f"{level} 使用了本地降级特效（非 AI 生图）。请开通豆包 Seedream 模型以获得真实效果。"
 
+    # Vercel 无持久磁盘：优先返回豆包 CDN 直链，否则 inline base64，避免 /static 二次请求 404
+    imageBase64 = ""
+    if os.getenv("VERCEL"):
+        if remoteImageUrl:
+            responseImageUrl = remoteImageUrl
+        else:
+            responseImageUrl = f"/static/generated/{outputPath.name}"
+            imageBytes = outputPath.read_bytes()
+            imageBase64 = f"data:image/png;base64,{base64.b64encode(imageBytes).decode()}"
+    else:
+        responseImageUrl = f"/static/generated/{outputPath.name}"
+
     return GenerateOut(
         success=True,
-        image_url=f"/static/generated/{outputPath.name}",
+        image_url=responseImageUrl,
         image_path=str(outputPath),
+        image_base64=imageBase64,
         message=message,
     )

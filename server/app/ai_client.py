@@ -129,8 +129,8 @@ class AiClient:
                 return True, "生图模型已开通"
             return False, msg
 
-    async def generateImageDoubao(self, prompt: str, sourcePath: Path) -> bytes:
-        """调用豆包 Seedream 图生图：参考图 + 效果描述 prompt。"""
+    async def generateImageDoubao(self, prompt: str, sourcePath: Path) -> tuple[bytes, str | None]:
+        """调用豆包 Seedream 图生图，返回图片字节与可选 CDN 直链。"""
         if not self.doubaoKey:
             raise RuntimeError("豆包 API Key 未配置，请在 server/.env 填写 DOUBAO_API_KEY")
 
@@ -173,12 +173,13 @@ class AiClient:
 
             item = data["data"][0]
             if item.get("b64_json"):
-                return base64.b64decode(item["b64_json"])
+                return base64.b64decode(item["b64_json"]), None
             if item.get("url"):
-                imageBytes = await self._downloadBytes(item["url"])
+                remoteUrl = str(item["url"])
+                imageBytes = await self._downloadBytes(remoteUrl)
                 if len(imageBytes) < 5000:
                     raise RuntimeError("豆包返回的图片过小，可能生成失败")
-                return imageBytes
+                return imageBytes, remoteUrl
             raise RuntimeError("豆包 API 未返回图片数据")
 
     async def _deepseekChat(self, messages: list[dict[str, Any]], max_tokens: int = 4096) -> str:
@@ -237,16 +238,16 @@ class AiClient:
         level: str,
         schemeMarkdown: str,
         outputPath: Path,
-    ) -> Path:
-        """图生图：上传人物 + 效果描述 → 豆包 API，返回全新生成图。"""
+    ) -> tuple[Path, str | None]:
+        """图生图：上传人物 + 效果描述 → 豆包 API，返回本地路径与可选 CDN 直链。"""
         prompt = self.buildTransformPrompt(schemeMarkdown, level)
 
         if not self.doubaoKey:
             raise RuntimeError("请先在 server/.env 配置 DOUBAO_API_KEY")
 
-        imageBytes = await self.generateImageDoubao(prompt, sourcePath)
+        imageBytes, remoteUrl = await self.generateImageDoubao(prompt, sourcePath)
         outputPath.write_bytes(imageBytes)
-        return outputPath
+        return outputPath, remoteUrl
 
     def applyLocalEffect(self, sourcePath: Path, level: str) -> bytes:
         """本地降级特效（仅开发调试用，效果有限）。"""

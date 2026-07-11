@@ -103,6 +103,7 @@ class GenerateOut(BaseModel):
     success: bool
     image_url: str = ""
     image_path: str = ""
+    image_base64: str = ""
     message: str = ""
 
 
