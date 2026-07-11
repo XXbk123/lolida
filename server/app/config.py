@@ -57,14 +57,28 @@ ADMIN_PASSWORD: str = os.getenv("ADMIN_PASSWORD", "lolida666")
 HOST: str = os.getenv("HOST", "0.0.0.0")
 PORT: int = int(os.getenv("PORT", "8765"))
 
-# 静态文件目录
-STATIC_DIR = Path(__file__).parent.parent / "static"
+# 静态文件目录（Vercel 等 serverless 环境 /var/task 只读，改用 /tmp）
+def _resolveStaticDir() -> Path:
+    """解析可写的静态文件根目录。"""
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
+        return Path("/tmp/lolida-static")
+    return Path(__file__).parent.parent / "static"
+
+
+def _ensureDir(path: Path) -> None:
+    """创建目录，serverless 只读文件系统时忽略失败。"""
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        pass
+
+
+STATIC_DIR = _resolveStaticDir()
 UPLOAD_DIR = STATIC_DIR / "uploads"
 GENERATED_DIR = STATIC_DIR / "generated"
 
-# 确保目录存在
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+_ensureDir(UPLOAD_DIR)
+_ensureDir(GENERATED_DIR)
 
 # 萝莉等级定义
 LEVELS = ["L1", "L2", "L3", "L4", "L5"]
