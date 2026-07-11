@@ -12,7 +12,11 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "pillow>=11.0.0",
     "aiofiles>=24.1.0",
+    "psycopg2-binary>=2.9.10",
 ]
+
+[tool.vercel]
+entrypoint = "app.main:app"
 
 [tool.uv]
 dev-dependencies = []

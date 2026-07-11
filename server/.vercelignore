@@ -1,0 +1,10 @@
+.venv
+__pycache__
+**/__pycache__
+*.db
+.env
+static/uploads
+static/generated
+test_*.jpg
+test_*.png
+test_*.jpeg
